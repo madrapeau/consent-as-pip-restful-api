@@ -13,9 +13,9 @@ import java.util.Date;
 public class AccountConsented {
     @PersistenceContext
     EntityManager entityManager;
-    @RequestMapping(value = "/accounts/{id}/has_been_consented", method = RequestMethod.GET)
+    @RequestMapping(value = "/accounts/{id}/has_account_details_consent", method = RequestMethod.GET)
     @ResponseBody
-    public Boolean getIsAccountConsented(
+    public Boolean getHasAccountDetailsConsent(
             @PathVariable("id") long id) {
 
         Date currentDate = new Date();
@@ -23,12 +23,55 @@ public class AccountConsented {
 
         for (Consent c: account.getConsents()) {
             if (c.getExpiryDate().compareTo(currentDate)>0) {
-                return true;
+                for (Permission p: c.getPermissions() ) {
+                    if(p.getPermissionCode() == "ReadAccountsDetail" && p.getAccount().getId() == account.getId() ){
+                        return true;
+                    }
+                }
             }
         }
         return false;
     }
 
+    @RequestMapping(value = "/accounts/{id}/has_balances_consent", method = RequestMethod.GET)
+    @ResponseBody
+    public Boolean getHasBalancesConsent(
+            @PathVariable("id") long id) {
+
+        Date currentDate = new Date();
+        Account account = entityManager.find(Account.class, id);
+
+        for (Consent c: account.getConsents()) {
+            if (c.getExpiryDate().compareTo(currentDate)>0) {
+                for (Permission p: c.getPermissions() ) {
+                    if(p.getPermissionCode() == "ReadBalances" && p.getAccount().getId() == account.getId() ){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    @RequestMapping(value = "/accounts/{id}/has_transactions_consent", method = RequestMethod.GET)
+    @ResponseBody
+    public Boolean getHasTransactionsConsent(
+            @PathVariable("id") long id) {
+
+        Date currentDate = new Date();
+        Account account = entityManager.find(Account.class, id);
+
+        for (Consent c: account.getConsents()) {
+            if (c.getExpiryDate().compareTo(currentDate)>0) {
+                for (Permission p: c.getPermissions() ) {
+                    if(p.getPermissionCode() == "ReadTransactionsDetail" && p.getAccount().getId() == account.getId() ){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }
 
 

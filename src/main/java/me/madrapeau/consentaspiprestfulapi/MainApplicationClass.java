@@ -42,6 +42,11 @@ public class MainApplicationClass implements CommandLineRunner {
         jdbcTemplate.execute("DROP TABLE CONSENTS.PUBLIC.consent_account IF EXISTS;");
         jdbcTemplate.execute("CREATE TABLE CONSENTS.PUBLIC.consent_account(" +
                 "id INTEGER, consent_id INTEGER, account_id INTEGER)");
+        //Permissions
+        jdbcTemplate.execute("DROP TABLE CONSENTS.PUBLIC.consent_permission IF EXISTS;");
+        jdbcTemplate.execute("CREATE TABLE CONSENTS.PUBLIC.consent_permission(" +
+                "id INTEGER, consent_id INTEGER, account_id INTEGER, permission_code VARCHAR(255))");
+
 
         // Create list of access record
         DateFormat formatter;
@@ -51,6 +56,7 @@ public class MainApplicationClass implements CommandLineRunner {
         List<Object[]> consentsList = new ArrayList<Object[]>();
         List<Object[]> accountsList = new ArrayList<Object[]>();
         List<Object[]> consent_accountList = new ArrayList<Object[]>();
+        List<Object[]> consent_permissionList = new ArrayList<Object[]>();
 
         String str_created_date = "01-January-18";
         String str_expiry_date = "01-February-18";
@@ -99,7 +105,7 @@ public class MainApplicationClass implements CommandLineRunner {
         // Uses JdbcTemplate's batchUpdate operation to bulk load account data
         jdbcTemplate.batchUpdate("INSERT INTO CONSENTS.PUBLIC.account (id, account_number, organisation_id) VALUES (?,?,?)", accountsList);
 
-        Object[] aaa = {1,3,15000};
+        /*Object[] aaa = {1,3,15000};
         consent_accountList.add(aaa);
         Object[] bbb = {2,3,24000};
         consent_accountList.add(bbb);
@@ -109,8 +115,33 @@ public class MainApplicationClass implements CommandLineRunner {
         // Use stream to print out each tuple of the list
         consent_accountList.forEach(consent_account -> log.info(String.format("Inserting account %s for consent id %s", consent_account[2], consent_account[1])));
 
-        // Uses JdbcTemplate's batchUpdate operation to bulk load consent_account data
-        jdbcTemplate.batchUpdate("INSERT INTO CONSENTS.PUBLIC.consent_account (id, consent_id, account_id) VALUES (?,?,?)", consent_accountList);
+        // Uses JdbcTemplate's batchUpdate operation to bulk load consent_permission data
+        jdbcTemplate.batchUpdate("INSERT INTO CONSENTS.PUBLIC.consent_permission (id, consent_id, account_id, permission_code) VALUES (?,?,?,?)", consent_permissionList);*/
+
+        Object[] aaaa = {1,3,15000, "ReadAccountsDetail"};
+        consent_permissionList.add(aaaa);
+        Object[] bbbb = {2,3,24000, "ReadAccountsDetail"};
+        consent_permissionList.add(bbbb);
+        Object[] cccc = {3,3,34999, "ReadAccountsDetail"};
+        consent_permissionList.add(cccc);
+        Object[] dddd = {4,3,15000, "ReadBalances"};
+        consent_permissionList.add(dddd);
+        Object[] eeee = {5,3,24000, "ReadBalances"};
+        consent_permissionList.add(eeee);
+        Object[] ffff = {6,3,34999, "ReadBalances"};
+        consent_permissionList.add(ffff);
+        Object[] gggg = {7,3,15000, "ReadTransactionsDetail"};
+        consent_permissionList.add(gggg);
+        Object[] hhhh = {8,3,24000, "ReadTransactionsDetail"};
+        consent_permissionList.add(hhhh);
+        Object[] iiii = {9,3,34999, "ReadTransactionsDetail"};
+        consent_permissionList.add(iiii);
+
+        // Use stream to print out each tuple of the list
+        consent_permissionList.forEach(consent_permission -> log.info(String.format("Inserting permission (%s) for account %s for consent id %s", consent_permission[3], consent_permission[2], consent_permission[1])));
+
+        // Uses JdbcTemplate's batchUpdate operation to bulk load consent_permission data
+        jdbcTemplate.batchUpdate("INSERT INTO CONSENTS.PUBLIC.consent_permission (id, consent_id, account_id, permission_code) VALUES (?,?,?,?)", consent_permissionList);
 
     }
 }

@@ -23,7 +23,7 @@ public class Account {
     //private Consent consent;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "consent_account",
+    @JoinTable(name = "consent_permission",
             joinColumns = @JoinColumn(name = "account_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "consent_id",
                     referencedColumnName = "id"))

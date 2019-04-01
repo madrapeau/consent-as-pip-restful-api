@@ -15,18 +15,27 @@ public class Consent {
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
 	private long id;
+
 	@Column
 	private long consumerId;
+
 	@Column
 	private long organisationId;
+
 	@Column
 	private String organisationName;
+
 	@Column
 	private Date createdDate;
+
 	@Column
 	private Date expiryDate;
+
 	@ManyToMany(mappedBy = "consents")
 	private List<Account> accounts;
+
+	@OneToMany(mappedBy = "consent")
+	private List<Permission> permissions;
 
 	public long getConsumerId() {
 		return consumerId;
@@ -65,5 +74,10 @@ public class Consent {
 	public void setExpiryDate(Date expiryDate) {
 		this.expiryDate = expiryDate;
 	}
+
+	public List<Permission> getPermissions() {
+		return permissions;
+	}
+
 }
 
